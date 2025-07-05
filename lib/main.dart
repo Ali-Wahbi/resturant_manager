@@ -14,21 +14,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 90, 52, 206),
         ),
@@ -41,16 +26,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -64,6 +39,7 @@ class SelectableContainer extends StatefulWidget {
     required this.foodImageUrl,
     required this.foodType,
     required this.price,
+    required this.onContainerClick,
   });
 
   final String foodName;
@@ -71,7 +47,7 @@ class SelectableContainer extends StatefulWidget {
   final FoodType foodType;
   double price = 100;
   bool isSelected = false;
-
+  Function(double, bool) onContainerClick;
   double containerWidth = 50;
   double containerHeight = 50;
 
@@ -87,6 +63,7 @@ class _SelectableContainerState extends State<SelectableContainer> {
       onClick: () {
         setState(() {
           widget.isSelected = !widget.isSelected;
+          widget.onContainerClick(widget.price, widget.isSelected);
         });
       },
     );
@@ -145,32 +122,82 @@ class FoodContainer extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isSelected = false;
-
+  double totalPrice = 0;
   List<Food> mainDishes = [
-    Food(foodName: 'Asida', foodType: FoodType.mainDish, price: 200),
-    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
-    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
-    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
+    Food(
+      foodName: 'Asida',
+      foodType: FoodType.mainDish,
+      price: 200,
+      imageUrl: 'images/Kesra.jpg',
+    ),
+    Food(
+      foodName: 'Kisra',
+      foodType: FoodType.mainDish,
+      price: 250,
+      imageUrl: 'images/Kesra.jpg',
+    ),
   ];
 
   List<Food> sideDishes = [
-    Food(foodName: 'Kabab', foodType: FoodType.sideDish, price: 100),
-    Food(foodName: 'Falafel', foodType: FoodType.sideDish, price: 150),
-    Food(foodName: 'Ful Medames', foodType: FoodType.sideDish, price: 100),
+    Food(
+      foodName: 'Kabab',
+      foodType: FoodType.sideDish,
+      price: 100,
+      imageUrl: 'images/kabab.jpg',
+    ),
+    Food(
+      foodName: 'Falafel',
+      foodType: FoodType.sideDish,
+      price: 150,
+      imageUrl: 'images/Falafel.jpeg',
+    ),
+    Food(
+      foodName: 'Ful Medames',
+      foodType: FoodType.sideDish,
+      price: 100,
+      imageUrl: 'images/Kabab.jpg',
+    ),
   ];
 
   List<Food> beverages = [
-    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
-    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
-    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
+    Food(
+      foodName: 'Mango juice',
+      foodType: FoodType.beverage,
+      price: 200,
+      imageUrl: 'images/Juice Mango.jpg',
+    ),
+    Food(
+      foodName: 'Orange juice',
+      foodType: FoodType.beverage,
+      price: 200,
+      imageUrl: 'images/Juice Orange.jpg',
+    ),
+    Food(
+      foodName: 'Apple juice',
+      foodType: FoodType.beverage,
+      price: 200,
+      imageUrl: 'images/Juice Apple.jpg',
+    ),
   ];
   List<Food> salads = [
-    Food(foodName: 'Aubergine Salad', foodType: FoodType.salad, price: 100),
-    Food(foodName: 'Roab Salad', foodType: FoodType.salad, price: 150),
-    Food(foodName: 'Green Salad', foodType: FoodType.salad, price: 150),
-    Food(foodName: 'Toomia', foodType: FoodType.salad, price: 100),
-    Food(foodName: 'Dakoa Salad', foodType: FoodType.salad, price: 100),
+    Food(
+      foodName: 'Roab Salad',
+      foodType: FoodType.salad,
+      price: 150,
+      imageUrl: 'images/Salad Roab.jpg',
+    ),
+    Food(
+      foodName: 'Green Salad',
+      foodType: FoodType.salad,
+      price: 150,
+      imageUrl: 'images/Salad Green.jpg',
+    ),
+    Food(
+      foodName: 'Dakwa Salad',
+      foodType: FoodType.salad,
+      price: 100,
+      imageUrl: 'images/Dakoa.jpg',
+    ),
   ];
   Color mainDishColor = const Color.fromARGB(75, 244, 67, 54);
   Color beverageColor = const Color.fromARGB(75, 33, 149, 243);
@@ -188,6 +215,29 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void onContainerClick(double price, bool isSelected) {
+    if (isSelected) {
+      totalPrice += price;
+    } else {
+      totalPrice -= price;
+    }
+  }
+
+  Future openDialoge() => showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("Total"),
+      content: Text("Bill: ${totalPrice.toInt()} SDG"),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text("Finish"),
+        ),
+      ],
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     Color containerColor = Color.fromARGB(255, 29, 0, 38);
@@ -207,26 +257,43 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      // body: ListView(children: [...buildContainers()]),
       body: ListView(
         children: [
-          foodDisplayContainer(mainDishColor, "Main Dishes", mainDishes),
-          // foodDisplayContainer(sideDishColor, "Side Dishes", sideDishs),
-          // foodDisplayContainer(beverageColor, "Beverages", beverages),
-          // foodDisplayContainer(saladColor, "Salads", salads),
+          foodDisplayContainer(
+            mainDishColor,
+            "Main Dishes",
+            mainDishes,
+            onContainerClick,
+          ),
+          foodDisplayContainer(
+            sideDishColor,
+            "Side Dishes",
+            sideDishes,
+            onContainerClick,
+          ),
+          foodDisplayContainer(
+            beverageColor,
+            "Beverages",
+            beverages,
+            onContainerClick,
+          ),
+          foodDisplayContainer(saladColor, "Salads", salads, onContainerClick),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          openDialoge();
+        },
+        child: Icon(Icons.arrow_forward),
       ),
     );
   }
 
-  List<Widget> buildContainers(List<Food> foodContainer) {
+  List<Widget> buildContainers(
+    List<Food> foodContainer,
+    Function(double, bool) onContainerClick,
+  ) {
     List<Widget> containerList = [];
-    //  SelectableContainer(foodName: "Kabab", price: 150,)
-    // containers.forEach((key, value) {
-    //   containerList.add(
-    //     Container(color: key, height: value)
-    //     );
-    // });
 
     for (var food in foodContainer) {
       containerList.add(
@@ -235,6 +302,7 @@ class _MyHomePageState extends State<MyHomePage> {
           foodType: food.foodType,
           foodImageUrl: food.imageUrl,
           price: food.price,
+          onContainerClick: onContainerClick,
         ),
       );
     }
@@ -245,6 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Color containerColor,
     String title,
     List<Food> foodContainer,
+    Function(double, bool) onContainerClick,
   ) {
     return Container(
       color: containerColor,
@@ -263,9 +332,8 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSpacing: 5,
               childAspectRatio: 1.1,
             ),
-            children: [...buildContainers(foodContainer)],
+            children: [...buildContainers(foodContainer, onContainerClick)],
           ),
-          Spacer(),
         ],
       ),
     );
@@ -277,7 +345,12 @@ class Food {
   FoodType foodType;
   double price;
   String imageUrl = 'images/MaddyMueller.jpeg';
-  Food({required this.foodName, required this.foodType, required this.price});
+  Food({
+    required this.foodName,
+    required this.foodType,
+    required this.price,
+    this.imageUrl = 'images/MaddyMueller.jpeg',
+  });
 }
 
 enum FoodType { mainDish, sideDish, beverage, salad }
