@@ -28,7 +28,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 206, 193, 52)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 90, 52, 206),
+        ),
+        scaffoldBackgroundColor: Color.fromARGB(255, 248, 255, 208),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -52,10 +55,24 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+class SelectableContainer extends StatefulWidget {
+  const SelectableContainer({super.key});
 
+  @override
+  State<SelectableContainer> createState() => _SelectableContainerState();
+}
+
+class _SelectableContainerState extends State<SelectableContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder(color: Colors.cyan, strokeWidth: 4);
+  }
+}
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  bool isSelected = false;
+  double _width = 100;
+  double _height = 100;
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -64,6 +81,20 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+  }
+
+  void _toggleSelection() {
+    setState(() {
+      isSelected = !isSelected;
+      double multi = 1.5;
+      if (isSelected) {
+        _width *= multi;
+        _height *= multi;
+      } else {
+        _width /= multi;
+        _height /= multi;
+      }
     });
   }
 
@@ -83,40 +114,93 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("Hello from Behind"),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          children: [Text("Hello from Behind")],
         ),
       ),
+      body: const SelectableContainer(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Center centeredContainer(BuildContext context) {
+    return Center(
+      // Center is a layout widget. It takes a single child and positions it
+      // in the middle of the parent.
+      child: Column(
+        // Column is also a layout widget. It takes a list of children and
+        // arranges them vertically. By default, it sizes itself to fit its
+        // children horizontally, and tries to be as tall as its parent.
+        //
+        // Column has various properties to control how it sizes itself and
+        // how it positions its children. Here we use mainAxisAlignment to
+        // center the children vertically; the main axis here is the vertical
+        // axis because Columns are vertical (the cross axis would be
+        // horizontal).
+        //
+        // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+        // action in the IDE, or press "p" in the console), to see the
+        // wireframe for each widget.
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.only(bottom: 16.0),
+            child: Text('You have pushed the button this many times:'),
+          ),
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 20.0,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          // 1. Using a dedicated button widget
+          ElevatedButton(
+            onPressed: _incrementCounter,
+            child: const Text('I am a button'),
+          ),
+          const SizedBox(height: 20), // To add some space
+          // 2. Making a generic widget clickable with a ripple effect
+          InkWell(
+            onTap: _toggleSelection,
+            borderRadius: BorderRadius.circular(
+              8.0,
+            ), // Match the container's radius
+            child: Container(
+              margin: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 20.0,
+              ),
+              width: _width,
+              height: _height,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Center(
+                child: Text(
+                  'Container Resize: $isSelected',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
