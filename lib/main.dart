@@ -55,9 +55,13 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-class SelectableContainer extends StatefulWidget {
-  const SelectableContainer({super.key});
 
+class SelectableContainer extends StatefulWidget {
+  SelectableContainer({super.key, required this.foodName, required this.price});
+
+  final String foodName;
+  double price = 100;
+  bool isSelected = false;
   @override
   State<SelectableContainer> createState() => _SelectableContainerState();
 }
@@ -65,9 +69,51 @@ class SelectableContainer extends StatefulWidget {
 class _SelectableContainerState extends State<SelectableContainer> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(color: Colors.cyan, strokeWidth: 4);
+    return FoodContainer(
+      widget: widget,
+      onClick: () {
+        setState(() {
+          widget.isSelected = !widget.isSelected;
+        });
+      },
+    );
   }
 }
+
+class FoodContainer extends StatelessWidget {
+  const FoodContainer({super.key, required this.widget, required this.onClick});
+
+  final SelectableContainer widget;
+  final Function onClick;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onClick();
+      },
+      child: Container(
+        width: 150,
+        height: 175,
+        color: widget.isSelected
+            ? Colors.amber
+            : const Color.fromARGB(0, 255, 255, 255),
+        child: Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              margin: const EdgeInsets.all(10.0),
+              color: Colors.red,
+            ),
+            Text("Name: ${widget.foodName}"),
+            Text("Price: ${widget.price}"),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   bool isSelected = false;
@@ -119,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [Text("Hello from Behind")],
         ),
       ),
-      body: const SelectableContainer(),
+      body: SelectableContainer(foodName: "Kabab", price: 150,),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
