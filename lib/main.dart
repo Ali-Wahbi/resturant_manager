@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 90, 52, 206),
         ),
-        scaffoldBackgroundColor: Color.fromARGB(255, 248, 255, 208),
+        scaffoldBackgroundColor: Color.fromARGB(255, 231, 203, 255),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -57,11 +58,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class SelectableContainer extends StatefulWidget {
-  SelectableContainer({super.key, required this.foodName, required this.price});
+  SelectableContainer({
+    super.key,
+    required this.foodName,
+    required this.foodImageUrl,
+    required this.foodType,
+    required this.price,
+  });
 
   final String foodName;
+  final String foodImageUrl;
+  final FoodType foodType;
   double price = 100;
   bool isSelected = false;
+
+  double containerWidth = 50;
+  double containerHeight = 50;
+
   @override
   State<SelectableContainer> createState() => _SelectableContainerState();
 }
@@ -92,21 +105,38 @@ class FoodContainer extends StatelessWidget {
         onClick();
       },
       child: Container(
-        width: 150,
-        height: 175,
+        width: widget.containerWidth,
+        height: widget.containerHeight,
         color: widget.isSelected
-            ? Colors.amber
+            ? const Color.fromARGB(255, 246, 238, 254)
             : const Color.fromARGB(0, 255, 255, 255),
         child: Column(
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 120,
+              height: 120,
               margin: const EdgeInsets.all(10.0),
-              color: Colors.red,
+              color: const Color.fromARGB(0, 73, 54, 244),
+              child: Image(
+                image: AssetImage(widget.foodImageUrl),
+                width: 30,
+                height: 30,
+              ),
             ),
-            Text("Name: ${widget.foodName}"),
-            Text("Price: ${widget.price}"),
+            Text(
+              widget.foodName,
+              style: TextStyle(
+                color: const Color.fromARGB(255, 19, 22, 21),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "${widget.price} SDG",
+              style: TextStyle(
+                color: const Color.fromARGB(255, 0, 86, 50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
@@ -115,138 +145,139 @@ class FoodContainer extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   bool isSelected = false;
-  double _width = 100;
-  double _height = 100;
-  void _incrementCounter() {
+
+  List<Food> mainDishes = [
+    Food(foodName: 'Asida', foodType: FoodType.mainDish, price: 200),
+    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
+    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
+    Food(foodName: 'Kisra', foodType: FoodType.mainDish, price: 250),
+  ];
+
+  List<Food> sideDishes = [
+    Food(foodName: 'Kabab', foodType: FoodType.sideDish, price: 100),
+    Food(foodName: 'Falafel', foodType: FoodType.sideDish, price: 150),
+    Food(foodName: 'Ful Medames', foodType: FoodType.sideDish, price: 100),
+  ];
+
+  List<Food> beverages = [
+    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
+    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
+    Food(foodName: 'Mango juice', foodType: FoodType.beverage, price: 200),
+  ];
+  List<Food> salads = [
+    Food(foodName: 'Aubergine Salad', foodType: FoodType.salad, price: 100),
+    Food(foodName: 'Roab Salad', foodType: FoodType.salad, price: 150),
+    Food(foodName: 'Green Salad', foodType: FoodType.salad, price: 150),
+    Food(foodName: 'Toomia', foodType: FoodType.salad, price: 100),
+    Food(foodName: 'Dakoa Salad', foodType: FoodType.salad, price: 100),
+  ];
+  Color mainDishColor = const Color.fromARGB(75, 244, 67, 54);
+  Color beverageColor = const Color.fromARGB(75, 33, 149, 243);
+  Color sideDishColor = const Color.fromARGB(75, 255, 235, 59);
+  Color saladColor = const Color.fromARGB(75, 76, 175, 79);
+
+  // ignore: unused_element
+  void _setState() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  void _toggleSelection() {
-    setState(() {
-      isSelected = !isSelected;
-      double multi = 1.5;
-      if (isSelected) {
-        _width *= multi;
-        _height *= multi;
-      } else {
-        _width /= multi;
-        _height /= multi;
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    Color containerColor = Color.fromARGB(255, 29, 0, 38);
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        backgroundColor: containerColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("Hello from Behind")],
+          children: [
+            Text(
+              "Select Food",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
-      body: SelectableContainer(foodName: "Kabab", price: 150,),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // body: ListView(children: [...buildContainers()]),
+      body: ListView(
+        children: [
+          foodDisplayContainer(mainDishColor, "Main Dishes", mainDishes),
+          // foodDisplayContainer(sideDishColor, "Side Dishes", sideDishs),
+          // foodDisplayContainer(beverageColor, "Beverages", beverages),
+          // foodDisplayContainer(saladColor, "Salads", salads),
+        ],
+      ),
     );
   }
 
-  Center centeredContainer(BuildContext context) {
-    return Center(
-      // Center is a layout widget. It takes a single child and positions it
-      // in the middle of the parent.
+  List<Widget> buildContainers(List<Food> foodContainer) {
+    List<Widget> containerList = [];
+    //  SelectableContainer(foodName: "Kabab", price: 150,)
+    // containers.forEach((key, value) {
+    //   containerList.add(
+    //     Container(color: key, height: value)
+    //     );
+    // });
+
+    for (var food in foodContainer) {
+      containerList.add(
+        SelectableContainer(
+          foodName: food.foodName,
+          foodType: food.foodType,
+          foodImageUrl: food.imageUrl,
+          price: food.price,
+        ),
+      );
+    }
+    return containerList;
+  }
+
+  Container foodDisplayContainer(
+    Color containerColor,
+    String title,
+    List<Food> foodContainer,
+  ) {
+    return Container(
+      color: containerColor,
       child: Column(
-        // Column is also a layout widget. It takes a list of children and
-        // arranges them vertically. By default, it sizes itself to fit its
-        // children horizontally, and tries to be as tall as its parent.
-        //
-        // Column has various properties to control how it sizes itself and
-        // how it positions its children. Here we use mainAxisAlignment to
-        // center the children vertically; the main axis here is the vertical
-        // axis because Columns are vertical (the cross axis would be
-        // horizontal).
-        //
-        // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-        // action in the IDE, or press "p" in the console), to see the
-        // wireframe for each widget.
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
-            child: Text('You have pushed the button this many times:'),
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.start,
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          Container(
-            margin: const EdgeInsets.all(10.0),
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 20.0,
+          GridView(
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+              childAspectRatio: 1.1,
             ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            children: [...buildContainers(foodContainer)],
           ),
-          // 1. Using a dedicated button widget
-          ElevatedButton(
-            onPressed: _incrementCounter,
-            child: const Text('I am a button'),
-          ),
-          const SizedBox(height: 20), // To add some space
-          // 2. Making a generic widget clickable with a ripple effect
-          InkWell(
-            onTap: _toggleSelection,
-            borderRadius: BorderRadius.circular(
-              8.0,
-            ), // Match the container's radius
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 20.0,
-              ),
-              width: _width,
-              height: _height,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Center(
-                child: Text(
-                  'Container Resize: $isSelected',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
+          Spacer(),
         ],
       ),
     );
   }
 }
+
+class Food {
+  String foodName;
+  FoodType foodType;
+  double price;
+  String imageUrl = 'images/MaddyMueller.jpeg';
+  Food({required this.foodName, required this.foodType, required this.price});
+}
+
+enum FoodType { mainDish, sideDish, beverage, salad }
