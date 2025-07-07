@@ -33,7 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class SelectableContainer extends StatefulWidget {
-
   SelectableContainer({
     super.key,
     required this.foodName,
@@ -46,12 +45,9 @@ class SelectableContainer extends StatefulWidget {
   final String foodName;
   final String foodImageUrl;
   final FoodType foodType;
-
   double price = 100;
-  int amount = 0;
   bool isSelected = false;
   Function(double, bool) onContainerClick;
-
   double containerWidth = 50;
   double containerHeight = 50;
 
@@ -79,19 +75,6 @@ class FoodContainer extends StatelessWidget {
 
   final SelectableContainer widget;
   final Function onClick;
-
-  Widget? DecrementButton() {
-    if (widget.amount > 0) {
-      return ElevatedButton(
-        onPressed: () {},
-        style: ButtonStyle(),
-        child: Icon(Icons.exposure_minus_1),
-      );
-    } else {
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -124,17 +107,12 @@ class FoodContainer extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Row(
-              children: [
-                // DecrementButton() ?? Container(),
-                Text(
-                  "${widget.price} SDG",
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 0, 86, 50),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            Text(
+              "${widget.price} SDG",
+              style: TextStyle(
+                color: const Color.fromARGB(255, 0, 86, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
